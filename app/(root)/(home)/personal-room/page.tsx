@@ -24,7 +24,7 @@ const Table = ({
   </div>
 );
 
-function page() {
+function PersonalRoom() {
   const { user } = useUser();
   const meetingId = user?.id;
   const meetingLink = `${process.env.NEXT_PUBLIC_BASE_URl}/meeting/${meetingId}?personal=true`;
@@ -77,4 +77,4 @@ function page() {
   );
 }
 
-export default page;
+export default PersonalRoom;
