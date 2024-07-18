@@ -11,6 +11,7 @@ import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
 import { useToast } from "@/components/ui/use-toast";
 import { Textarea } from "./ui/textarea";
 import ReactDatePicker from "react-datepicker";
+import { Input } from "./ui/input";
 
 const initialValues = {
   dateTime: new Date(),
@@ -26,16 +27,12 @@ const MeetingTypeList = () => {
 
   const { user } = useUser();
   const client = useStreamVideoClient();
-  const [values, setValues] = useState({
-    dateTime: new Date(),
-    description: "",
-    link: "",
-  });
+  const [values, setValues] = useState(initialValues);
 
   const [callDetails, setCallDetails] = useState<Call>();
   const { toast } = useToast();
 
-  const createMeeting = () => {
+  const createMeeting = async () => {
     if (!client || !user) return;
 
     try {
@@ -54,7 +51,7 @@ const MeetingTypeList = () => {
 
       const description = values.description || "Instant meeting";
 
-      call.getOrCreate({
+      await call.getOrCreate({
         data: {
           starts_at: startsAt,
           custom: {
@@ -89,24 +86,24 @@ const MeetingTypeList = () => {
       />
       <HomeCard
         img="/icons/join-meeting.svg"
-        title="Join Meeting"
-        description="via invitation link"
-        className="bg-blue-1"
-        handleClick={() => setMeetingState("isJoiningMeeting")}
-      />
-      <HomeCard
-        img="/icons/schedule.svg"
         title="Schedule Meeting"
         description="Plan your meeting"
-        className="bg-purple-1"
+        className="bg-blue-1"
         handleClick={() => setMeetingState("isScheduleMeeting")}
       />
       <HomeCard
-        img="/icons/recordings.svg"
+        img="/icons/schedule.svg"
         title="View Recordings"
         description="Meeting Recordings"
-        className="bg-yellow-1"
+        className="bg-purple-1"
         handleClick={() => router.push("/recordings")}
+      />
+      <HomeCard
+        img="/icons/recordings.svg"
+        title="Join Meeting"
+        description="via invitation link"
+        className="bg-yellow-1"
+        handleClick={() => setMeetingState("isJoiningMeeting")}
       />
 
       {!callDetails ? (
@@ -168,6 +165,21 @@ const MeetingTypeList = () => {
         buttonText="Start Meeting"
         handleClick={createMeeting}
       />
+
+      <MeetingModal
+        isOpen={meetingState === "isJoiningMeeting"}
+        onClose={() => setMeetingState(undefined)}
+        title="Type the link here"
+        className="text-center"
+        buttonText="Join Meeting"
+        handleClick={() => router.push(values.link)}
+      >
+        <Input
+          placeholder="Meeting Link"
+          className="bg-dark-3 border-none focus-visible:ring-0 focus-visible:ring-offset-0"
+          onChange={(e) => setValues({ ...values, link: e.target.value })}
+        />
+      </MeetingModal>
     </section>
   );
 };

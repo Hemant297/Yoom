@@ -1,5 +1,5 @@
-'use client';
-import { useState } from 'react';
+"use client";
+import { useState } from "react";
 import {
   CallControls,
   CallParticipantsList,
@@ -8,9 +8,9 @@ import {
   PaginatedGridLayout,
   SpeakerLayout,
   useCallStateHooks,
-} from '@stream-io/video-react-sdk';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Users, LayoutList } from 'lucide-react';
+} from "@stream-io/video-react-sdk";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Users, LayoutList } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -18,31 +18,30 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from './ui/dropdown-menu';
-import Loader from './Loader';
-import EndCallButton from './EndCallButton';
-import { cn } from '@/lib/utils';
+} from "./ui/dropdown-menu";
+import Loader from "./Loader";
+import EndCallButton from "./EndCallButton";
+import { cn } from "@/lib/utils";
 
-type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
+type CallLayoutType = "grid" | "speaker-left" | "speaker-right";
 
 const MeetingRoom = () => {
   const searchParams = useSearchParams();
-  const isPersonalRoom = !!searchParams.get('personal');
+  const isPersonalRoom = !!searchParams.get("personal");
   const router = useRouter();
-  const [layout, setLayout] = useState<CallLayoutType>('speaker-left');
+  const [layout, setLayout] = useState<CallLayoutType>("speaker-left");
   const [showParticipants, setShowParticipants] = useState(false);
   const { useCallCallingState } = useCallStateHooks();
 
- 
   const callingState = useCallCallingState();
 
   if (callingState !== CallingState.JOINED) return <Loader />;
 
   const CallLayout = () => {
     switch (layout) {
-      case 'grid':
+      case "grid":
         return <PaginatedGridLayout />;
-      case 'speaker-right':
+      case "speaker-right":
         return <SpeakerLayout participantsBarPosition="left" />;
       default:
         return <SpeakerLayout participantsBarPosition="right" />;
@@ -56,16 +55,16 @@ const MeetingRoom = () => {
           <CallLayout />
         </div>
         <div
-          className={cn('h-[calc(100vh-86px)] hidden ml-2', {
-            'show-block': showParticipants,
+          className={cn("h-[calc(100vh-86px)] hidden ml-2", {
+            "show-block": showParticipants,
           })}
         >
           <CallParticipantsList onClose={() => setShowParticipants(false)} />
         </div>
       </div>
-      
+
       <div className="fixed bottom-0 flex w-full items-center justify-center gap-5 flex-wrap">
-        <CallControls  />
+        <CallControls onLeave={() => router.push("/")} />
 
         <DropdownMenu>
           <div className="flex items-center">
@@ -74,7 +73,7 @@ const MeetingRoom = () => {
             </DropdownMenuTrigger>
           </div>
           <DropdownMenuContent className="border-dark-1 bg-dark-1 text-white">
-            {['Grid', 'Speaker-Left', 'Speaker-Right'].map((item, index) => (
+            {["Grid", "Speaker-Left", "Speaker-Right"].map((item, index) => (
               <div key={index}>
                 <DropdownMenuItem
                   onClick={() =>
